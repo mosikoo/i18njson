@@ -5,6 +5,7 @@ const path = require('path');
 const parser = require('xlsx');
 const chalk = require('chalk');
 const process = require('process');
+const pic = require('./gui');
 
 function isExcel(filepath) {
   const isExist = fs.existsSync(filepath);
@@ -44,11 +45,24 @@ data.forEach(function(item) {
   en[key] = item[dataKeys[0]];
   zh[key] = item[dataKeys[1]];
 });
-// console.log(zh, en);
 
-fs.writeFile(process.cwd() + '/en.js', processData(en), function(err) {
-  console.log(chalk.yellow('en done\n'));
-});
-fs.writeFile(process.cwd() + '/zh-cn.js', processData(zh), function(err) {
-  console.log(chalk.yellow('zh done\n'));
-});
+function write(desPath, desData) {
+  return new Promise(function(resolve, reject) {
+    fs.writeFile(path.resolve(process.cwd(), desPath), processData(desData), function(err) {
+      if (err) {
+        reject('Error when writing the Js file!');
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
+Promise.all([write('./en.js', en), write('./zh-cn.js', zh)])
+  .then(function(content) {
+    console.log(chalk.cyan(pic));
+    console.log('The i18n files(' + chalk.red('en.js') + ' and ' + chalk.red('zh-cn.js') + ' is created successfully in ' +
+      chalk.red(process.cwd()));
+  }).catch(function(err) {
+    console.log(chalk.red(err));
+  });

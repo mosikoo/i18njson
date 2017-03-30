@@ -1,14 +1,14 @@
 {
   "name": "i18njson",
   "version": "1.0.1",
-  "author": "",
+  "author": "mosikoo",
   "description": "transform excel to json file",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT",
   "bin": {
-    "i18njson": "./index.js"
+    "i18njson": "./src/index.js"
   },
   "main": "index.js",
   "repository": {
