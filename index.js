@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const path = require('path');
 const parser = require('xlsx');
@@ -21,16 +23,16 @@ function processData(json) {
   return str;
 }
 
-const filepath = path.resolve(__dirname, process.argv[2]);
+const filepath = path.resolve(process.cwd(), process.argv[2]);
+
 if(!isExcel(filepath)) {
   console.log(chalk.green('please select a file with \'xlsx\' or \'xls\' extname! '))
   process.exit(1);
 }
 
 const workbook = parser.readFile(filepath);
-const sheetNames = workbook.SheetNames;
 // 默认只取第一张表
-const workSheet = workbook.Sheets[sheetNames[0]];
+const workSheet = workbook.Sheets[workbook.SheetNames[0]];
 const data = parser.utils.sheet_to_json(workSheet);
 
 const en = {};
