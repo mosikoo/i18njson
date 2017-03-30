@@ -46,9 +46,9 @@ data.forEach(function(item) {
 });
 // console.log(zh, en);
 
-fs.writeFile(__dirname + '/en.js', processData(en), function(err) {
+fs.writeFile(process.cwd() + '/en.js', processData(en), function(err) {
   console.log(chalk.yellow('en done\n'));
 });
-fs.writeFile(__dirname + '/zh-cn.js', processData(zh), function(err) {
+fs.writeFile(process.cwd() + '/zh-cn.js', processData(zh), function(err) {
   console.log(chalk.yellow('zh done\n'));
 });
