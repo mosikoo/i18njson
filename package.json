@@ -1,6 +1,6 @@
 {
   "name": "i18njson",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "mosikoo",
   "description": "transform excel to json file",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "license": "MIT",
   "bin": {
-    "i18njson": "./src/index.js"
+    "i18njson": "./bin/i18njson"
   },
   "main": "index.js",
   "repository": {
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "chalk": "^1.1.3",
+    "commander": "^2.9.0",
     "xlsx": "^0.9.7"
   },
   "devDependencies": {}

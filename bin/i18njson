@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+
+program
+  .version('1.0.2')
+  .description('  将国际化excel文档转换为json文档')
+  .usage('<command> [options]');
+
+program.command('build [options]', '将国际化excel文档转换为json文档');
+
+program.parse(process.argv);
+if (!program.args.length) {
+  program.help();
+}
