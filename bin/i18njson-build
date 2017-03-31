@@ -6,7 +6,7 @@ const parser = require('xlsx');
 const chalk = require('chalk');
 const program = require('commander');
 const process = require('process');
-const pic = require('../mock/gui');
+const pic = require('../gui');
 
 program
   .description('  将国际化excel文档转换为json文档');
@@ -50,8 +50,8 @@ const dataKeys = Object.keys(data[0]);
 
 data.forEach(function(item) {
   const key = item[dataKeys[2]];
-  en[key] = item[dataKeys[0]];
-  zh[key] = item[dataKeys[1]];
+  en[key] = item[dataKeys[1]];
+  zh[key] = item[dataKeys[0]];
 });
 
 function write(desPath, desData) {
