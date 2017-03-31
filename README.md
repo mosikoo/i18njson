@@ -1,4 +1,4 @@
-## i18njson  [![NPM version](https://img.shields.io/badge/npm-v1.0.2-blue.svg)](https://www.npmjs.org/package/i18njson)
+## i18njson  [![NPM version](https://img.shields.io/npm/v/i18njson.svg)](https://www.npmjs.org/package/i18njson)
 
 国际化json生成器
 将excel翻译文档转换成两个中英文js文件
