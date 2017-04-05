@@ -16,6 +16,7 @@
     "url": "https://github.com/mosikoo/i18njson.git"
   },
   "dependencies": {
+    "async": "^2.3.0",
     "chalk": "^1.1.3",
     "commander": "^2.9.0",
     "xlsx": "^0.9.7"
