@@ -26,40 +26,20 @@ var index = 1;
 utils.isExist(filepath);
 
 // 异步遍历
-// utils.work(filepath, (i18nPath) => {
-//   console.log(i18nPath);
-//   fs.readdir(i18nPath, (err, files) => {
-//     if (err) {
-//       console.log('读取i18n文件(' + i18nPath + ')失败~');
-//     }
-//     if (files.some(file => file === 'zh-cn.js')) {
-//         const json = require(path.resolve(i18nPath, 'zh-cn.js'));
-//         workbook.Sheets['sheet' + index] = json;
-//         workbook.SheetNames.push('sheet' + index);
-//         index += 1;
-//         console.log(json, 1);
-//     } else {
-//       console.log(chalk.red('Warn: i18n文件下需存在zh-cn.js文件，否则无法转换~'));
-//       console.log(chalk.red('     at ' + i18nPath));
-//     }
-//   })
-// });
-
-// 同步遍历
-const jsons = [];
 utils.work(filepath, (i18nPath) => {
-  console.log(i18nPath);
-  const files = fs.readdirSync(i18nPath);
-  if (files.some(file => file === 'zh-cn.js')) {
-      const json = require(path.resolve(i18nPath, 'zh-cn.js'));
-      workbook.Sheets['sheet' + index] = json;
-      workbook.SheetNames.push('sheet' + index);
-      console.log(json, 1);
-      jsons.push(json);
-  } else {
-    console.log(chalk.red('Warn: i18n文件下需存在zh-cn.js文件，否则无法转换~'));
-    console.log(chalk.red('     at ' + i18nPath));
-  }
+  fs.readdir(i18nPath, (err, files) => {
+    if (err) {
+      console.log('读取i18n文件(' + i18nPath + ')失败~');
+    }
+    if (files.some(file => file === 'zh-cn.js')) {
+        const json = require(path.resolve(i18nPath, 'zh-cn.js'));
+        workbook.Sheets['sheet' + index] = json;
+        workbook.SheetNames.push('sheet' + index);
+        index += 1;
+        console.log(json, 1);
+    } else {
+      console.log(chalk.red('Warn: i18n文件下需存在zh-cn.js文件，否则无法转换~'));
+      console.log(chalk.red('     at ' + i18nPath));
+    }
+  })
 });
-
-console.log(jsons, 'jsons');

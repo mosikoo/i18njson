@@ -10,39 +10,44 @@ utils.isExist = (filepath) => {
   }
 }
 // 异步遍历recursion
-// function workDir(filepath, callback) {
-//   fs.readdir(filepath, (err, files) => {
-//     if (err) {
-//       console.log(chalk.red('遍历目录出现错误!'));
-//     }
-//     files.forEach(file => {
-//       const innerFilepath = path.resolve(filepath,file);
-//       fs.stat(innerFilepath, (err, stats) => {
-//         if (err) {
-//           console.log(err);
-//         }
-//         if (stats.isDirectory() && file !== 'node_modules') {
-//           workDir(innerFilepath, callback);
-//         }
-//         if (file === 'i18n') {
-//           callback(innerFilepath);
-//         }
-//       })
-//     })
-//   });
-// }
-// 同步遍历
-function workDir(filepath, callback) {
-  const files = fs.readdirSync(filepath);
-  files.forEach(file => {
-    const innerFilepath = path.resolve(filepath,file);
-    const stats = fs.statSync(innerFilepath);
-    if (stats.isDirectory() && file !== 'node_modules') {
-      workDir(innerFilepath, callback);
+var fileNum = 0, fileNum2 = 0;
+function workDir(filepath, callback ) {
+  fs.readdir(filepath, (err, files) => {
+    if (err) {
+      console.log(chalk.red('遍历目录出现错误!'));
     }
-    if (file === 'i18n') {
-      callback(innerFilepath);
+    var length = files.length;
+    if (length <= 0) {
+      return callback(null, json);
     }
+    files.forEach(file => {
+      const innerFilepath = path.resolve(filepath,file);
+      fs.stat(innerFilepath, (err, stats) => {
+        if (err) {
+          console.log(err);
+        }
+        if (stats.isDirectory() && file !== 'node_modules') {
+          if (file === 'i18n') {
+            // callback(innerFilepath);
+          }
+          workDir(innerFilepath, (error ,json) => {
+            if (error) {
+              return callback(error);
+            }
+            length -= 1;
+            if (length <= 0) {
+              callback(error, json);
+            }
+          });
+        } else {
+          length -= 1;
+          if (length <= 0) {
+            callback(null, json);
+          }
+        }
+      })
+    });
+
   });
 }
 
