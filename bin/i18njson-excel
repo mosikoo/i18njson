@@ -22,24 +22,22 @@ const workbook = {
   Sheets: {},
   filesPath: [],
 };
-var index = 1;
-utils.isExist(filepath);
 
+utils.isExist(filepath);
+const header = ['key', 'chinese', 'english'];
 // 异步遍历
-utils.work(filepath, (i18nPath) => {
-  fs.readdir(i18nPath, (err, files) => {
-    if (err) {
-      console.log('读取i18n文件(' + i18nPath + ')失败~');
-    }
-    if (files.some(file => file === 'zh-cn.js')) {
-        const json = require(path.resolve(i18nPath, 'zh-cn.js'));
-        workbook.Sheets['sheet' + index] = json;
-        workbook.SheetNames.push('sheet' + index);
-        index += 1;
-        console.log(json, 1);
-    } else {
-      console.log(chalk.red('Warn: i18n文件下需存在zh-cn.js文件，否则无法转换~'));
-      console.log(chalk.red('     at ' + i18nPath));
-    }
-  })
+utils.work(filepath, (files, i18nPath) => {
+  if (files.some(file => file === 'zh-cn.js')) {
+      const json = require(path.resolve(i18nPath, 'zh-cn.js'));
+      const index = workbook.SheetNames.length + 1;
+      workbook.SheetNames.push('sheet' + index);
+      console.log(utils.formatWb(header, json))
+      workbook.Sheets['sheet' + index] = utils.formatWb(header, json);
+
+  } else {
+    console.log(chalk.red('Warn: i18n文件下需存在zh-cn.js文件，否则无法转换~'));
+    console.log(chalk.red('     at ' + i18nPath));
+  }
+}, () => {
+  parser.writeFile(workbook, 'i18n.xlsx');
 });

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 const path = require('path');
+const assign = require('object-assign');
 const utils = {};
 
 utils.isExist = (filepath) => {
@@ -11,14 +12,17 @@ utils.isExist = (filepath) => {
 }
 // 异步遍历recursion
 var fileNum = 0, fileNum2 = 0;
-function workDir(filepath, callback ) {
+function workDir(filepath, processCallback, callback ) {
   fs.readdir(filepath, (err, files) => {
     if (err) {
       console.log(chalk.red('遍历目录出现错误!'));
     }
     var length = files.length;
     if (length <= 0) {
-      return callback(null, json);
+      return callback(null);
+    }
+    if (/\/i18n$/.test(filepath)) {
+      processCallback(files, filepath);
     }
     files.forEach(file => {
       const innerFilepath = path.resolve(filepath,file);
@@ -30,19 +34,19 @@ function workDir(filepath, callback ) {
           if (file === 'i18n') {
             // callback(innerFilepath);
           }
-          workDir(innerFilepath, (error ,json) => {
+          workDir(innerFilepath, processCallback, (error) => {
             if (error) {
               return callback(error);
             }
             length -= 1;
             if (length <= 0) {
-              callback(error, json);
+              callback(null);
             }
           });
         } else {
           length -= 1;
           if (length <= 0) {
-            callback(null, json);
+            callback(null);
           }
         }
       })
@@ -52,5 +56,43 @@ function workDir(filepath, callback ) {
 }
 
 utils.work = workDir;
+
+/*
+ * 转换成 worksheet 需要的结构
+ *
+ *
+ * @retrun {object} 如
+ * {!ref: 'A1:C2', A1: {v: 1}, B1: {v: 2}, C1: {v: 3}, A2: {v: 1}, B2: {v: 2}, C2: {v: 3}}
+ */
+utils.formatWb = (headers, json) => {
+  const headersData = headers.map((key, i) => ({
+    v: key,
+    position: String.fromCharCode(65 + i) + 1,
+  })).reduce((pre, cur) => assign({}, pre, { [cur.position]: {v: cur.v} }), {});
+  var index = 2;
+  const data = Object.keys(json).reduce((pre, cur) => {
+    const curObj = {
+      [String.fromCharCode(65) + index]: {
+        v: cur,
+      },
+      [String.fromCharCode(66) + index]: {
+        v: json[cur],
+      },
+      [String.fromCharCode(67) + index]: {
+        v: '',
+      },
+    };
+    index += 1;
+    return assign({}, pre, curObj);
+  }, {});
+
+  const workbook = assign({}, headersData, data);
+  const keys = Object.keys(workbook);
+  const ref = {
+    '!ref': keys[0] + ':' + keys[keys.length - 1],
+  };
+
+  return assign({}, workbook, ref);
+};
 
 module.exports = utils;

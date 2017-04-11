@@ -38,11 +38,11 @@ function readDirectory(_path, ignorePattenList, callback) {
         ignorePattenList = [];
     }
 
-    // let result = {
-    //     path: _path,
-    //     name: path.basename(_path),
-    //     type: 'directory'
-    // };
+    let result = {
+        path: _path,
+        name: path.basename(_path),
+        type: 'directory'
+    };
 
     fs.readdir(_path, function (error, files) {
         if (error) {
@@ -51,10 +51,10 @@ function readDirectory(_path, ignorePattenList, callback) {
 
         let length = files.length;
         if (length <= 0) {
-            return callback(undefined);
+            return callback(undefined, result);
         }
 
-        // result.children = [];
+        result.children = [];
 
         files.forEach(function (file) {
             let filePath = path.resolve(_path, file);
@@ -62,31 +62,30 @@ function readDirectory(_path, ignorePattenList, callback) {
                 if (error) {
                     return callback(error);
                 }
-                console.log(filePath)
+                console.log(filepath)
                 if (fileStat.isDirectory()) {
                     readDirectory(filePath, ignorePattenList, function (error, _result) {
                         if (error) {
                             return callback(error);
                         }
 
-                        // result.children.push(_result);
+                        result.children.push(_result);
 
                         length -= 1;
                         if (length <= 0) {
-                            return callback(undefined);
+                            return callback(undefined, result);
                         }
                     });
                 } else {
-                    // result.children.push({
-                    //     path: filePath,
-                    //     name: file,
-                    //     type: 'file'
-                    // });
+                    result.children.push({
+                        path: filePath,
+                        name: file,
+                        type: 'file'
+                    });
 
                     length -= 1;
                     if (length <= 0) {
-
-                        return callback(undefined);
+                        return callback(undefined, result);
                     }
                 }
             });

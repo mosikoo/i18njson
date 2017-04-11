@@ -40,6 +40,7 @@ if(!isExcel(filepath)) {
 }
 
 const workbook = parser.readFile(filepath);
+console.log(workbook)
 // 默认只取第一张表
 const workSheet = workbook.Sheets[workbook.SheetNames[0]];
 const data = parser.utils.sheet_to_json(workSheet);
