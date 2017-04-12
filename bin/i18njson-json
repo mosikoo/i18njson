@@ -1,18 +1,17 @@
-// 已废弃
 #!/usr/bin/env node
 
 const fs = require('fs');
-const path = require('path');
-const parser = require('xlsx');
+const path =  require('path');
 const chalk = require('chalk');
 const program = require('commander');
+const parser = require('xlsx');
 const process = require('process');
 const pic = require('../gui');
 
 program
   .description('  将国际化excel文档转换为json文档');
 
-program.parse(process.argv)
+program.parse(process.argv);
 if (!program.args.length) {
   program.help();
 }
@@ -41,38 +40,54 @@ if(!isExcel(filepath)) {
 }
 
 const workbook = parser.readFile(filepath);
+const data = [];
+workbook.SheetNames.forEach(function (sheetName) {
+  const workSheet = workbook.Sheets[sheetName];
+  data.push(parser.utils.sheet_to_json(workSheet));
+});
 
-// 默认只取第一张表
-const workSheet = workbook.Sheets[workbook.SheetNames[0]];
-const data = parser.utils.sheet_to_json(workSheet);
+const en = data.map(function(item, index) {
+  if (item.length <= 1) {
+    return null;
+  }
+  const dataKeys = Object.keys(item[0]);
+  const content = {
+    filepath: dataKeys[1],
+    en: {}
+  };
+  item.forEach(function(unit, index) {
+    if (index !== 0) {
+        content.en[unit[dataKeys[0]]] = unit[dataKeys[2]];
+    }
+  });
 
-const en = {};
-const zh = {};
-const dataKeys = Object.keys(data[0]);
-
-data.forEach(function(item) {
-  const key = item[dataKeys[2]];
-  en[key] = item[dataKeys[1]];
-  zh[key] = item[dataKeys[0]];
+  return content;
+}).filter(function (item) {
+  return item;
 });
 
 function write(desPath, desData) {
   return new Promise(function(resolve, reject) {
-    fs.writeFile(path.resolve(process.cwd(), desPath), processData(desData), function(err) {
+    fs.writeFile(desPath, processData(desData), function(err) {
       if (err) {
         reject('Error when writing the Js file!');
         return;
       }
-      resolve();
+      resolve(desPath);
     });
   });
 }
 
-Promise.all([write('./en.js', en), write('./zh-cn.js', zh)])
+const writeData = en.map(function(item) {
+  return write(path.resolve(item.filepath, './en.js'), item.en);
+});
+Promise.all(writeData)
   .then(function(content) {
+    content.forEach(function(item) {
+      console.log('The i18n files(' + chalk.red('en.js') + ') is created successfully');
+      console.log('   in ' + chalk.red(item));
+    });
     console.log(chalk.cyan(pic));
-    console.log('The i18n files(' + chalk.red('en.js') + ' and ' + chalk.red('zh-cn.js') + ') is created successfully in ' +
-      chalk.red(process.cwd()));
   }).catch(function(err) {
     console.log(chalk.red(err));
   });

@@ -1,6 +1,6 @@
 {
   "name": "i18njson",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "mosikoo",
   "description": "transform excel to json file",
   "scripts": {
