@@ -64,12 +64,24 @@ utils.work = workDir;
  * @retrun {object} 如
  * {!ref: 'A1:C2', A1: {v: 1}, B1: {v: 2}, C1: {v: 3}, A2: {v: 1}, B2: {v: 2}, C2: {v: 3}}
  */
-utils.formatWb = (headers, json) => {
+utils.formatWb = (headers, json, i18nPath) => {
+  var index = 2;
+  const fileHeader = {
+    A1: {
+      v: 'filepath',
+    },
+    B1: {
+      v: i18nPath,
+    },
+    C1: {
+      v: 'no translate!'
+    },
+  };
   const headersData = headers.map((key, i) => ({
     v: key,
-    position: String.fromCharCode(65 + i) + 1,
+    position: String.fromCharCode(65 + i) + index,
   })).reduce((pre, cur) => assign({}, pre, { [cur.position]: {v: cur.v} }), {});
-  var index = 2;
+  index += 1;
   const data = Object.keys(json).reduce((pre, cur) => {
     const curObj = {
       [String.fromCharCode(65) + index]: {
@@ -86,7 +98,7 @@ utils.formatWb = (headers, json) => {
     return assign({}, pre, curObj);
   }, {});
 
-  const workbook = assign({}, headersData, data);
+  const workbook = assign({}, fileHeader, headersData, data);
   const keys = Object.keys(workbook);
   const ref = {
     '!ref': keys[0] + ':' + keys[keys.length - 1],

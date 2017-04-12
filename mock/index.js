@@ -93,4 +93,22 @@ function readDirectory(_path, ignorePattenList, callback) {
     });
 }
 
+// async traverse
+// async function recursion (filepath) {
+//     let [files,stat] = await Promise.all([fs.readdir(filepath), fs.stat(filepath)]);
+//     let res = [stat];
+//     if(files && files.length){
+//         const promises = files.map(function (file) {
+//             const innerFilepath = path.resolve(filepath,file);
+//             return recursion(innerFilepath);
+//         });
+//         const stats = await Promise.all(promises);
+//         for(let item of stats){
+//             res = res.concat(item);
+//         }
+//     }
+//     return res;
+// }
+
+
 readDirectory(filepath, () => {console.log('success')});
