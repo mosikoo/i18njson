@@ -43,3 +43,5 @@ i18njson json i18n.xlsx
 - 对翻译过的`i18n.excel`执行命令, `i18njson json i18n.excel`
 
 ##### i18njson build 废弃
+
+##### demo见mock文件夹中
