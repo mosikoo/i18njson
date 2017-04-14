@@ -39,4 +39,5 @@ utils.work(filepath, (files, i18nPath) => {
   }
 }, () => {
   parser.writeFile(workbook, 'i18n.xlsx');
+  console.log('i18n.xlsx生成成功');
 });
